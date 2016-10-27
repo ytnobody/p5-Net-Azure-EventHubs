@@ -10,14 +10,18 @@ use LWP::UserAgent;
 use Digest::SHA 'hmac_sha256_base64';
 use URI::Escape 'uri_escape';
 use URI;
+use String::CamelCase 'decamelize';
 
 use Class::Accessor::Lite (
     new => 0,
-    ro  => [qw[agent serializer name sas_key_name sas_key_value expire timeout api_version]],
+    ro  => [qw[
+        connection_string 
+        endpoint shared_access_key_name shared_access_key entity_path
+        agent serializer expire timeout api_version
+    ]],
 );
 
 our $VERSION              = "0.01";
-our $ENDPOINT_FORMAT      = '%s.servicebus.windows.net';
 our $DEFAULT_TOKEN_EXPIRE = 3600;
 our $DEFAULT_TIMEOUT      = 60;
 our $DEFAULT_API_VERSION  = '2014-01';
@@ -29,7 +33,14 @@ sub new {
     $param{expire}      ||= $DEFAULT_TOKEN_EXPIRE;
     $param{timeout}     ||= $DEFAULT_TIMEOUT;
     $param{api_version} ||= $DEFAULT_API_VERSION;
+    %param = (%param, $class->_parse_connection_string($param{connection_string})); 
     bless {%param}, $class;
+}
+
+sub _parse_connection_string {
+    my ($class, $string) = @_;
+    my %parsed = (map {split '=', $_, 2} split(';', $string));
+    ( map {(decamelize($_) => $parsed{$_})} keys %parsed ); 
 }
 
 sub _expire_time {
@@ -39,26 +50,20 @@ sub _expire_time {
 }
 
 sub _generate_sas_token {
-    my ($self, $expire_time) = @_;
-    my $target_uri = $self->_shared_resource_domain;
-    my $signature  = hmac_sha256_base64("$target_uri\n$expire_time", $self->sas_key_value);
-    sprintf 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s', 
-        $target_uri, 
-        uri_escape($signature), 
-        $expire_time, 
-        $self->sas_key_name
-    ;
-}
-
-sub _shared_resource_domain {
-    my $self = shift;
-    sprintf $ENDPOINT_FORMAT, $self->name;
+    my ($self, $uri) = @_;
+    my $target_uri  = lc(uri_escape(lc($uri->as_string)));
+    my $expire_time = $self->_expire_time;
+    my $to_sign     = "$target_uri\n$expire_time";
+    my $signature   = hmac_sha256_base64($to_sign, $self->shared_access_key);
+    chomp $signature;
+    sprintf 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s', $target_uri, uri_escape($signature), $expire_time, $self->shared_access_key_name;
 }
 
 sub _uri {
     my ($self, $path, %params) = @_;
     $path ||= '/';
-    my $uri = URI->new("https://". $self->_shared_resource_domain);
+    my $uri = URI->new($self->endpoint);
+    $uri->scheme('https');
     $uri->path($path);
     $uri->query_form(%params);
     $uri;
@@ -68,16 +73,16 @@ sub _req {
     my ($self, $path, $payload, %params) = @_;
     $params{timeout}     ||= $self->timeout;
     $params{api_version} ||= $self->api_version;
-    my $url    = $self->_uri($path, %params)->as_string;
+    my $uri    = $self->_uri($path, %params);
+    my $url    = $uri->as_string;
     my $expire = $self->_expire_time;
-    my $auth   = $self->_generate_sas_token($expire);
+    my $auth   = $self->_generate_sas_token($uri);
     my $data   = $self->serializer->encode($payload);
     my $req = Net::Azure::EventHubs::Request->new(
         POST => $url,
         [ 
             'Authorization' => $auth,
             'Content-Type'  => 'application/atom+xml;type=entry;charset=utf-8',
-            'Host'          => $self->_shared_resource_domain,
         ],
         $data,
     );
@@ -86,8 +91,9 @@ sub _req {
 }
 
 sub message {
-    my ($self, $entity, $payload) = @_;
-    my $req = $self->_req("/$entity/messages" => $payload);
+    my ($self, $payload) = @_;
+    my $path = sprintf "/%s/messages", $self->entity_path;
+    my $req = $self->_req($path => $payload);
     $req;
 }
 
