@@ -1,0 +1,6 @@
+### copy to t/sas.conf and replace following values
+{
+    name          => 'yournamespace',
+    sas_key_name  => 'yourkeyname',
+    sas_key_value => 'yourkeystring',
+};
