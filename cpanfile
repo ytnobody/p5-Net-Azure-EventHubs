@@ -8,8 +8,6 @@ requires 'URI';
 requires 'JSON';
 requires 'Carp';
 
-
-
 on 'test' => sub {
     requires 'Test::More', '0.98';
 };
