@@ -1,0 +1,4 @@
+--lib
+--color
+--failure
+--exec "perl -Ilib -MDevel::Cover=+ignore,.*,+select,^lib"

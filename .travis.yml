@@ -6,3 +6,15 @@ perl:
   - "5.18"
   - "5.20"
 
+before_script:
+  - cpanm --quiet --notest --skip-satisfied Devel::Cover::Report::Coveralls
+  - cover -delete 
+
+script:
+  - perl Build.PL 
+  - ./Build build 
+  - HARNESS_PERL_SWITCHES="-MDevel::Cover=+ignore,inc" PERL5LIB="lib" prove t/
+
+after_success:
+  - cover -report coveralls
+
