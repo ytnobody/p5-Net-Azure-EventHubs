@@ -21,7 +21,6 @@ if (!$config) {
 my $hub = Net::Azure::EventHubs->new(connection_string => $config->{connection_string});
 
 my $req = $hub->message({Location => 'Roppongi', Temperture => 20});
-diag explain($req->as_string);
 ok $req->do;
 
 done_testing;

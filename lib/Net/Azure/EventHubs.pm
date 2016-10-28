@@ -7,7 +7,8 @@ use Net::Azure::EventHubs::Request;
 use Carp;
 use JSON;
 use LWP::UserAgent;
-use Digest::SHA 'hmac_sha256_base64';
+use Digest::SHA 'hmac_sha256';
+use MIME::Base64 'encode_base64';
 use URI::Escape 'uri_escape';
 use URI;
 use String::CamelCase 'decamelize';
@@ -51,10 +52,10 @@ sub _expire_time {
 
 sub _generate_sas_token {
     my ($self, $uri) = @_;
-    my $target_uri  = lc(uri_escape(lc($uri->as_string)));
+    my $target_uri  = lc(uri_escape(lc(sprintf("%s://%s%s", $uri->scheme, $uri->host, $uri->path))));
     my $expire_time = $self->_expire_time;
     my $to_sign     = "$target_uri\n$expire_time";
-    my $signature   = hmac_sha256_base64($to_sign, $self->shared_access_key);
+    my $signature   = encode_base64(hmac_sha256($to_sign, $self->shared_access_key));
     chomp $signature;
     sprintf 'SharedAccessSignature sr=%s&sig=%s&se=%s&skn=%s', $target_uri, uri_escape($signature), $expire_time, $self->shared_access_key_name;
 }
@@ -74,12 +75,11 @@ sub _req {
     $params{timeout}     ||= $self->timeout;
     $params{api_version} ||= $self->api_version;
     my $uri    = $self->_uri($path, %params);
-    my $url    = $uri->as_string;
     my $expire = $self->_expire_time;
     my $auth   = $self->_generate_sas_token($uri);
     my $data   = $self->serializer->encode($payload);
     my $req = Net::Azure::EventHubs::Request->new(
-        POST => $url,
+        POST => $uri->as_string,
         [ 
             'Authorization' => $auth,
             'Content-Type'  => 'application/atom+xml;type=entry;charset=utf-8',
