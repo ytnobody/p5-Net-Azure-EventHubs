@@ -1,14 +1,40 @@
 # NAME
 
-Net::Azure::EventHubs - It's new $module
+Net::Azure::EventHubs - A Client Class for Azure Event Hubs 
 
 # SYNOPSIS
 
     use Net::Azure::EventHubs;
+    my $eh = Net::Azure::EventHubs->new(
+        connection_string => 'Endpoint=sb://...',
+    );
+    $eh->message({Location => 'Roppongi', Temperature => 20});
 
 # DESCRIPTION
 
-Net::Azure::EventHubs is ...
+Net::Azure::EventHubs is a cliant class for Azure Event Hubs.
+
+If you want to know more information about Azure Event Hubs, please see [https://msdn.microsoft.com/en-us/library/azure/mt652157.aspx](https://msdn.microsoft.com/en-us/library/azure/mt652157.aspx). 
+
+# METHODS
+
+## new
+
+    my $eh = Net::Azure::EventHubs->new(
+        connection_string => 'Endpoint=sb://...',
+    );
+
+A constructor method. 
+
+It requires the 'connection\_string' parameter that is a value of 'CONNECTION STRING–PRIMARY KEY' or 'CONNECTION STRING–SECONDARY KEY' on the 'Shared access policies' blade of Event Hubs in Microsoft Azure Portal. 
+
+## message 
+
+    $eh->message($payload);
+
+Send a message that contains specified payload to Azure Event Hubs.
+
+$payload is a hashref.  
 
 # LICENSE
 

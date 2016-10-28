@@ -1,5 +1,5 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "A Client Class for Azure Event Hubs ",
    "author" : [
       "ytnobody <ytnobody@gmail.com>"
    ],
@@ -42,15 +42,37 @@
       },
       "runtime" : {
          "requires" : {
+            "Carp" : "0",
+            "Class::Accessor::Lite" : "0",
+            "Digest::SHA" : "0",
+            "HTTP::Message" : "0",
+            "HTTP::Request" : "0",
+            "JSON" : "0",
+            "LWP::UserAgent" : "0",
+            "MIME::Base64" : "0",
+            "String::CamelCase" : "0",
+            "URI" : "0",
             "perl" : "5.008001"
          }
       },
       "test" : {
          "requires" : {
-            "Test::More" : "0.98"
+            "Test::More" : "0.98",
+            "Test::Time" : "0"
          }
       }
    },
    "release_status" : "unstable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs/issues"
+      },
+      "homepage" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/ytnobody/p5-Net-Azure-EventHubs.git",
+         "web" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs"
+      }
+   },
    "version" : "0.01"
 }
