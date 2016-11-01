@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/ytnobody/p5-Net-Azure-EventHubs.svg?branch=master)](https://travis-ci.org/ytnobody/p5-Net-Azure-EventHubs)
 # NAME
 
 Net::Azure::EventHubs - A Client Class for Azure Event Hubs 
