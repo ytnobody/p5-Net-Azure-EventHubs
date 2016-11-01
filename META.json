@@ -44,13 +44,11 @@
          "requires" : {
             "Carp" : "0",
             "Class::Accessor::Lite" : "0",
-            "Digest::SHA" : "0",
             "HTTP::Message" : "0",
             "HTTP::Request" : "0",
             "JSON" : "0",
             "LWP::UserAgent" : "0",
-            "MIME::Base64" : "0",
-            "String::CamelCase" : "0",
+            "Net::Azure::Authorization::SAS" : "0",
             "URI" : "0",
             "perl" : "5.008001"
          }

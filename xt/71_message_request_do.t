@@ -3,6 +3,7 @@ use warnings;
 use Test::More;
 use File::Spec;
 use Net::Azure::EventHubs;
+use utf8;
 
 my $test_config_file = File::Spec->catfile(qw/t sas.conf/);
 my $config;
@@ -20,7 +21,7 @@ if (!$config) {
 
 my $hub = Net::Azure::EventHubs->new(connection_string => $config->{connection_string});
 
-my $req = $hub->message({Location => 'Roppongi', Temperture => 20});
+my $req = $hub->message({Location => '六本木', Temperture => 14});
 ok $req->do;
 
 done_testing;

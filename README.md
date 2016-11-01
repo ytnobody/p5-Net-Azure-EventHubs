@@ -8,6 +8,9 @@ Net::Azure::EventHubs - A Client Class for Azure Event Hubs
     my $eh = Net::Azure::EventHubs->new(
         connection_string => 'Endpoint=sb://...',
     );
+    ## or use Net::Azure::Authorization::SAS for Authorization
+    my $sas = Net::Azure::Authorization::SAS->new(connection_string => 'Endpoint=sb://...');
+    $eh = Net::Azure::EventHubs->new(authorizer => $sas);
     $eh->message({Location => 'Roppongi', Temperature => 20});
 
 # DESCRIPTION
