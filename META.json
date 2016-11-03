@@ -4,7 +4,7 @@
       "ytnobody <ytnobody@gmail.com>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.4.1, CPAN::Meta::Converter version 2.150001",
+   "generated_by" : "Minilla/v3.0.4, CPAN::Meta::Converter version 2.143240",
    "license" : [
       "perl_5"
    ],
@@ -72,5 +72,5 @@
          "web" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs"
       }
    },
-   "version" : "0.01"
+   "version" : "0.02"
 }

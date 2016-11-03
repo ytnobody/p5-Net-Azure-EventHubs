@@ -2,6 +2,10 @@ Revision history for Perl extension Net-Azure-EventHubs
 
 {{$NEXT}}
 
+0.02 2016-11-03T16:52:43Z
+
+    - fix a lie in documentation 
+
 0.01 2016-11-01T05:48:52Z
 
     - original version

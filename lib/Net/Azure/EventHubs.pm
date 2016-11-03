@@ -20,7 +20,7 @@ use Class::Accessor::Lite (
     ]],
 );
 
-our $VERSION              = "0.01";
+our $VERSION              = "0.02";
 our $DEFAULT_API_VERSION  = '2014-01';
 our $DEFAULT_TIMEOUT      = 60;
 
@@ -89,7 +89,8 @@ Net::Azure::EventHubs - A Client Class for Azure Event Hubs
     ## or use Net::Azure::Authorization::SAS for Authorization
     my $sas = Net::Azure::Authorization::SAS->new(connection_string => 'Endpoint=sb://...');
     $eh = Net::Azure::EventHubs->new(authorizer => $sas);
-    $eh->message({Location => 'Roppongi', Temperature => 20});
+    my $req = $eh->message({Location => 'Roppongi', Temperature => 20});
+    my $res = $req->do;
 
 =head1 DESCRIPTION
 
@@ -111,11 +112,15 @@ It requires the 'connection_string' parameter that is a value of 'CONNECTION STR
 
 =head2 message 
 
-    $eh->message($payload);
+    my $req = $eh->message($payload);
+    $req->do;
 
-Send a message that contains specified payload to Azure Event Hubs.
+Returns an object of Net::Azure::EventHub::Reqest.
 
 $payload is a hashref.  
+
+Send a message that contains specified payload to Azure Event Hubs when do() method is called.
+
 
 =head1 LICENSE
 
