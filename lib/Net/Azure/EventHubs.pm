@@ -8,6 +8,8 @@ use Net::Azure::Authorization::SAS;
 use JSON;
 use LWP::UserAgent;
 use URI;
+use Carp;
+use Try::Tiny;
 
 use Class::Accessor::Lite (
     new => 0,
@@ -26,11 +28,21 @@ our $DEFAULT_TIMEOUT      = 60;
 
 sub new {
     my ($class, %param)   = @_;
+
     $param{agent}         = LWP::UserAgent->new(agent => sprintf('%s/%s', $class, $VERSION));
     $param{serializer}    = JSON->new->utf8(1);
-    $param{authorizer}  ||= Net::Azure::Authorization::SAS->new(connection_string => $param{connection_string});
     $param{api_version} ||= $DEFAULT_API_VERSION;
     $param{timeout}     ||= $DEFAULT_TIMEOUT;
+
+    if (!defined $param{authorizer}) {
+        my $authorizer = try {
+            Net::Azure::Authorization::SAS->new(connection_string => $param{connection_string})
+        } catch {
+            croak $_;
+        };
+        $param{authorizer} = $authorizer;
+    }
+
     bless {%param}, $class;
 }
 
@@ -46,6 +58,9 @@ sub _uri {
 
 sub _req {
     my ($self, $path, $payload, %params) = @_;
+    croak 'path is reuired'        if !defined $path;
+    croak 'payload is required'    if !defined $payload;
+    croak 'payload is not hashref' if ref($payload) ne 'HASH';
     $params{timeout}     ||= $self->timeout;
     $params{api_version} ||= $self->api_version;
     my $uri  = $self->_uri($path, %params);
