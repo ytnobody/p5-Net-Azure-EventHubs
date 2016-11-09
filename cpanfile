@@ -7,6 +7,7 @@ requires 'HTTP::Message';
 requires 'URI';
 requires 'JSON';
 requires 'Carp';
+requires 'Try::Tiny';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';
