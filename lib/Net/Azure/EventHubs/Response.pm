@@ -1,4 +1,4 @@
-package Net::Azure::EventHub::Response;
+package Net::Azure::EventHubs::Response;
 use strict;
 use warnings;
 
