@@ -30,3 +30,4 @@ MYMETA.*
 /Net-Azure-EventHubs-*
 
 t/sas.conf
+.perl-version
