@@ -48,7 +48,7 @@
             "HTTP::Request" : "0",
             "JSON" : "0",
             "LWP::UserAgent" : "0",
-            "Net::Azure::Authorization::SAS" : "0",
+            "Net::Azure::Authorization::SAS" : "0.03",
             "Try::Tiny" : "0",
             "URI" : "0",
             "perl" : "5.008001"
@@ -73,5 +73,5 @@
          "web" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs"
       }
    },
-   "version" : "0.04"
+   "version" : "0.05"
 }
