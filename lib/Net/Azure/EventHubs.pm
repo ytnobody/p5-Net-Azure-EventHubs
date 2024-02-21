@@ -49,6 +49,10 @@ sub new {
 sub _uri {
     my ($self, $path, %params) = @_;
     $path ||= '/';
+    for my $value (values %params) {
+        $value = ''
+            if !defined $value;
+    }
     my $uri = URI->new($self->authorizer->endpoint);
     $uri->scheme('https');
     $uri->path($path);
