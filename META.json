@@ -74,7 +74,7 @@
          "web" : "https://github.com/ytnobody/p5-Net-Azure-EventHubs"
       }
    },
-   "version" : "0.09",
+   "version" : "0.10",
    "x_contributors" : [
       "sazuma <azuma.satoshi@colon.ne.jp>"
    ],
